@@ -50,7 +50,7 @@ const ProjectCard = ({ project }) => {
 
   return (
     <motion.div 
-      className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden text-white"
+      className="bg-gray-800 rounded-lg overflow-hidden text-white"
       initial={{ width: "80%" }}
       whileHover={{ 
         width: "100%",
@@ -136,7 +136,7 @@ export default function Projects() {
         observer.observe(ref);
         ref.style.opacity = '0';
         ref.style.transform = 'translateY(50px)';
-        ref.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+        ref.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out'; // Reduced transition duration for faster loading
       }
     });
 
@@ -149,7 +149,7 @@ export default function Projects() {
 
   return (
     <section id="work" className="mb-16 text-white ">
-      <h2 className="inline-block px-4 py-2 bg-[#111827] dark:bg-white-700 rounded-md border border-gray-500 flex justify-center mb-6">Work</h2>
+      <h2 className="inline-block px-2 py-2 bg-[#111827] rounded-md border border-gray-500 flex justify-center mb-6">Work</h2>
       <p className="mb-4">Some of the noteworthy projects I have built:</p>
       <div className="space-y-12">
         {projects.map((project, index) => (

@@ -99,12 +99,12 @@ export default function Experience() {
   }, []);
 
   return (
-    <section id="experience" className="mb-12 py-12 bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800">
+    <section id="experience" className="mb-12 py-12 bg-gradient-to-b from-gray-900 to-gray-800">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold mb-6 text-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
           Professional Journey
         </h2>
-        <p className="mb-8 text-center text-gray-600 dark:text-gray-400 max-w-xl mx-auto text-base italic">
+        <p className="mb-8 text-center text-gray-400 max-w-xl mx-auto text-base italic">
           A tour through my career, blending creativity, technical expertise, and growth:
         </p>
         <div className="space-y-8">
@@ -112,7 +112,7 @@ export default function Experience() {
             <motion.div 
               key={index} 
               ref={(el) => (experienceRefs.current[index] = el)}
-              className="relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent hover:border-blue-500 dark:hover:border-purple-500"
+              className="relative bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent hover:border-blue-500"
               initial={{ scale: 1 }}
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
@@ -122,22 +122,22 @@ export default function Experience() {
               </div>
               <div className="flex items-center mb-4">
                 <div className="w-16 h-16 mr-4 overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-purple-500 p-0.5 shadow-inner">
-                  <img src={job.logo} alt={`${job.company} logo`} className="w-full h-full object-contain rounded-full bg-white dark:bg-gray-700" />
+                  <img src={job.logo} alt={`${job.company} logo`} className="w-full h-full object-contain rounded-full bg-gray-800" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-1 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">{job.role}</h3>
-                  <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold">{job.company}</p>
-                  <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center">
+                  <h3 className="text-xl font-bold text-white mb-1 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">{job.role}</h3>
+                  <p className="text-sm text-blue-400 font-semibold">{job.company}</p>
+                  <span className="text-xs text-gray-400 flex items-center">
                     <Briefcase className="w-3 h-3 mr-1 text-green-500" />
                     {job.period}
                   </span>
                 </div>
               </div>
-              <ul className="space-y-2 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-sm">
+              <ul className="space-y-2 bg-gray-700 p-3 rounded-lg text-sm">
                 {job.responsibilities.map((responsibility, idx) => (
                   <li key={idx} className="flex items-start group">
                     <ChevronRight className="w-4 h-4 mr-2 text-green-500 flex-shrink-0 mt-0.5 transform group-hover:translate-x-1 transition-transform duration-200" />
-                    <span className="text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">{responsibility}</span>
+                    <span className="text-gray-300 group-hover:text-blue-600 transition-colors duration-200">{responsibility}</span>
                   </li>
                 ))}
               </ul>
