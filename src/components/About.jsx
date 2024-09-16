@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export default function About() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const sectionRef = useRef(null);
 
   useEffect(() => {
@@ -48,21 +49,34 @@ export default function About() {
             <h3 className="text-xl font-semibold mb-4 text-blue-300">Curious about me? Here you have it:</h3>
             <p className="mb-3 text-sm">
               I'm a passionate Software Engineer specializing in Frontend Development (React.js & Angular).
-              I'm enthusiastic about bringing technical and visual aspects of digital products to life. User experience, pixel perfect design, and writing clean accessible, human code matters to me.
+              I'm enthusiastic about bringing technical and visual aspects of digital products to life.
             </p>
-            <p className="mb-3 text-sm">
-              My journey as a web developer began in 2017. Since then, I've grown and evolved, taking on new challenges and learning the latest technologies. In my 7+ years as a web developer, I've worked with various companies and startups, proud of the skills I've gained and the progress I've made.
-            </p>
-            <p className="mb-3 text-sm">
-              When not in full-on developer mode, you can find me Working on my Startups or Reading Engineering Books, witnessing early startup journeys or enjoying free time. Follow me on Twitter for tech-related bites and build-in-public updates, or on GitHub.
-            </p>
-            <p className="mb-2 text-sm">Quick bits about me:</p>
-            <ul className="list-disc list-inside mb-3 pl-4 text-sm">
-              <li>B.E. in Electrical and Electronics Engineering</li>
-              <li>Frontend Developer</li>
-              <li>Aspiring Founder</li>
-            </ul>
-            <p className="italic text-sm">Available for freelance work, Collaborations and Jobs - feel free to reach out and say hello! I promise I'm Friendly😉</p>
+            {isExpanded && (
+              <>
+                <p className="mb-3 text-sm">
+                  User experience, pixel perfect design, and writing clean accessible, human code matters to me.
+                </p>
+                <p className="mb-3 text-sm">
+                  My journey as a web developer began in 2017. Since then, I've grown and evolved, taking on new challenges and learning the latest technologies. In my 7+ years as a web developer, I've worked with various companies and startups, proud of the skills I've gained and the progress I've made.
+                </p>
+                <p className="mb-3 text-sm">
+                  When not in full-on developer mode, you can find me Working on my Startups or Reading Engineering Books, witnessing early startup journeys or enjoying free time. Follow me on Twitter for tech-related bites and build-in-public updates, or on GitHub.
+                </p>
+                <p className="mb-2 text-sm">Quick bits about me:</p>
+                <ul className="list-disc list-inside mb-3 pl-4 text-sm">
+                  <li>B.E. in Electrical and Electronics Engineering</li>
+                  <li>Frontend Developer</li>
+                  <li>Aspiring Founder</li>
+                </ul>
+                <p className="italic text-sm">Available for freelance work, Collaborations and Jobs - feel free to reach out and say hello! I promise I'm Friendly😉</p>
+              </>
+            )}
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)} 
+              className="mt-4 text-blue-500 hover:underline"
+            >
+              {isExpanded ? 'Read Less' : 'Read More'}
+            </button>
           </div>
         </div>
       </div>

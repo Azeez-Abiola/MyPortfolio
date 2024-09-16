@@ -148,8 +148,8 @@ export default function Projects() {
   }, []);
 
   return (
-    <section id="work" className="mb-16 text-white">
-      <h2 className="text-2xl font-bold mb-4">Work</h2>
+    <section id="work" className="mb-16 text-white ">
+      <h2 className="inline-block px-4 py-2 bg-[#111827] dark:bg-white-700 rounded-md border border-gray-500 flex justify-center mb-6">Work</h2>
       <p className="mb-4">Some of the noteworthy projects I have built:</p>
       <div className="space-y-12">
         {projects.map((project, index) => (
