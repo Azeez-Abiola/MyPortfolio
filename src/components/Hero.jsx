@@ -33,9 +33,8 @@ export default function Hero() {
               </span>
             </h1>
             <p className="text-xl mb-4 text-white">
-              I'm a seasoned frontend developer with a focus on building (and occasionally designing) 
-              exceptional digital experiences that are fast, accessible, visually appealing, and responsive. Even 
-              though I have been creating web applications for over 5 years, I still love it as if it was something new.
+              I'm a seasoned frontend developer with over 5years of experience and a focus on building
+              exceptional digital experiences that are fast, accessible, visually appealing, and responsive.
             </p>
             <div className="flex items-center space-x-4 mb-4">
               <MapPin className="w-5 h-5 text-white-500" />
