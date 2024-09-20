@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import { Globe, Github } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -45,7 +45,7 @@ const projects = [
   }
 ];
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = memo(({ project }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -112,7 +112,7 @@ const ProjectCard = ({ project }) => {
       </div>
     </motion.div>
   );
-};
+});
 
 export default function Projects() {
   const projectRefs = useRef([]);
@@ -131,12 +131,12 @@ export default function Projects() {
       { threshold: 0.1 }
     );
 
-    projectRefs.current.forEach((ref, index) => {
+    projectRefs.current.forEach((ref) => {
       if (ref) {
         observer.observe(ref);
         ref.style.opacity = '0';
         ref.style.transform = 'translateY(50px)';
-        ref.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out'; // Reduced transition duration for faster loading
+        ref.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
       }
     });
 

@@ -133,7 +133,7 @@ export default function Experience() {
                   </span>
                 </div>
               </div>
-              <ul className="space-y-2 bg-gray-700 p-3 rounded-lg text-sm">
+              <ul className="space-y-2 bg-gray-900 p-3 rounded-lg text-sm"> {/* Changed color to match homepage background */}
                 {job.responsibilities.map((responsibility, idx) => (
                   <li key={idx} className="flex items-start group">
                     <ChevronRight className="w-4 h-4 mr-2 text-green-500 flex-shrink-0 mt-0.5 transform group-hover:translate-x-1 transition-transform duration-200" />

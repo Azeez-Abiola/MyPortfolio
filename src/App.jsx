@@ -30,7 +30,7 @@ export default function App() {
           <div className={`absolute inset-2 border-4 ${isDarkMode ? 'border-gray-700' : 'border-gray-400'} rounded-full animate-ping`}></div>
           <div className={`absolute inset-4 border-4 ${isDarkMode ? 'border-gray-600' : 'border-gray-300'} rounded-full animate-pulse`}></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className={`${isDarkMode ? 'text-white' : 'text-white-800'} text-2xl font-bold animate-bounce`}>&lt;AA&gt;</span>
+            <span className={`${isDarkMode ? 'text-white' : 'text-white-800'} text-2xl font-bold animate-bounce`}>&lt;AA/&gt;</span>
           </div>
         </div>
       </div>

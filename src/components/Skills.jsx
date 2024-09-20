@@ -17,7 +17,7 @@ const skills = [
 ];
 
 const SkillItem = ({ skill }) => (
-  <div className="flex flex-col items-center justify-center w-32 mx-4 my-2 transition-transform duration-150 ease-in-out transform hover:scale-105">
+  <div className="flex flex-col items-center justify-center w-32 mx-4 my-2 transition-transform duration-75 ease-in-out transform hover:scale-105">
     <img 
       src={skill.icon}
       alt={skill.name} 

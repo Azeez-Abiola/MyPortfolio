@@ -63,7 +63,7 @@ export default function Header() {
               key={item.href}
               href={item.href}
               onClick={(e) => handleSmoothScroll(e, item.href)}
-              className={`inline-block py-2 hover:text-blue-400 transition-colors duration-300 relative group ${
+              className={`inline-block py-2 hover:text-blue-400 transition-colors duration-300 relative ${
                 activeSection === item.href.slice(1) ? 'text-blue-400' : ''
               }`}
             >

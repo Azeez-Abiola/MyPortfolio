@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Send, Mail, Phone, MapPin } from 'lucide-react';
+import emailjs from 'emailjs-com'; // Import Email.js
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,8 @@ export default function Contact() {
     email: '',
     message: '',
   });
+  const [showThankYou, setShowThankYou] = useState(false); // State for thank you message
+  const [buttonAnimation, setButtonAnimation] = useState(''); // State for button animation
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,8 +17,28 @@ export default function Contact() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
+
+    // Send email using Email.js
+    emailjs.send('service_o9j3nn5', 'template_xuihsf8', formData, 'klZk9imZk9GF3AycA')
+      .then((response) => {
+        console.log('Email sent successfully!', response.status, response.text);
+        setShowThankYou(true); // Show thank you message
+        setFormData({ name: '', email: '', message: '' }); // Reset form
+
+        // Fade out the thank you message after 2 seconds
+        setTimeout(() => {
+          setShowThankYou(false); // Hide thank you message
+        }, 2000); // Adjust the duration as needed
+      })
+      .catch((err) => {
+        console.error('Failed to send email. Error:', err);
+      });
+
+    // Trigger button animation
+    setButtonAnimation('button-animation');
+    setTimeout(() => {
+      setButtonAnimation(''); // Reset animation class after it completes
+    }, 300); // Match the duration of the animation
   };
 
   return (
@@ -46,7 +69,7 @@ export default function Contact() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 block w-3/4 h-8 rounded-md bg-gray-700 border-gray-600 text-white focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              className="mt-1 block w-full h-8 rounded-md bg-gray-700 border-gray-600 text-white focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               required
             />
           </div>
@@ -58,7 +81,7 @@ export default function Contact() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-3/4 h-12 rounded-md bg-gray-700 border-gray-600 text-white focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              className="mt-1 block w-full h-12 rounded-md bg-gray-700 border-gray-600 text-white focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               required
             />
           </div>
@@ -76,12 +99,17 @@ export default function Contact() {
           </div>
           <button
             type="submit"
-            className="w-full bg-[#111827] text-white py-2 px-4 rounded-md hover:bg-white hover:text-[#111827] hover:border-[#111827] hover:border hover:rounded-[#111827] transition duration-300 flex items-center justify-center"
+            className={`w-full bg-[#111827] text-white py-2 px-4 rounded-md hover:bg-white hover:text-[#111827] hover:border-[#111827] hover:border hover:rounded-[#111827] transition duration-300 flex items-center justify-center ${buttonAnimation}`}
           >
             <span className="hover:text-[#111827]">Send Message</span>
             <Send className="w-4 h-4 ml-2" />
           </button>
         </form>
+        {showThankYou && ( // Conditional rendering for thank you message
+  <div className={`mt-4 p-4 bg-[#111827] text-white rounded-md ${showThankYou ? 'animate-fade-in' : 'animate-fade-out'}`}>
+    Thank you for your message!
+  </div>
+)}
       </div>
     </section>
   );
