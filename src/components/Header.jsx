@@ -73,7 +73,7 @@ export default function Header() {
           ))}
         </nav>
         <div className="flex items-center space-x-6">
-          <a href="public/Azeez Abiola Quadri updated Cv.docx" className="bg-[#111827] text-white px-5 py-2 rounded-md hover:bg-blue-500 transition-colors duration-300">Download CV</a>
+          <a href="public/Azeez Abiola Quadri updated Cv.pdf" className="bg-[#111827] text-white px-5 py-2 rounded-md hover:bg-blue-500 transition-colors duration-300">Download CV</a>
           <div className="hidden md:flex space-x-4">
             <a href="https://github.com/Azeez-Abiola" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
               <FaGithub className="w-6 h-6" />
