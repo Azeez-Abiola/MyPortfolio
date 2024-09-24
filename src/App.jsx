@@ -1,26 +1,30 @@
-import { useState, useEffect } from 'react'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import About from './components/About'
-import Skills from './components/Skills'
-import Experience from './components/Experience'
-import Projects from './components/Projects'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import About from './components/About';
+import Skills from './components/Skills';
+import Experience from './components/Experience';
+import Projects from './components/Projects';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
+import Blog from './components/blog'; // Correct path to Blog component
+import Admin from './components/Admin'; // Ensure Admin component is correctly imported
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [posts, setPosts] = useState([]); // State to hold blog posts
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-  }
+    setIsDarkMode(!isDarkMode);
+  };
 
   useEffect(() => {
     setTimeout(() => {
-      setIsLoading(false)
-    }, 2000) // Adjust the duration as needed
-  }, [])
+      setIsLoading(false);
+    }, 2000); // Adjust the duration as needed
+  }, []);
 
   if (isLoading) {
     return (
@@ -34,21 +38,31 @@ export default function App() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#111827] text-white' : 'bg-[#111827] text-gray-900'}`}>
-      <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <main className="container mx-auto px-4 py-8">
-        <Hero isDarkMode={isDarkMode} />
-        <About />
-        <Skills />
-        <Experience />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
-  )
+    <Router>
+      <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#111827] text-white' : 'bg-[#111827] text-gray-900'}`}>
+        <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        <main className="container mx-auto px-4 py-8">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero isDarkMode={isDarkMode} />
+                <About />
+                <Skills />
+                <Experience />
+                <Projects />
+                <Contact />
+              </>
+            } />
+            <Route path="/blog" element={<Blog posts={posts} />} /> {/* Pass posts to Blog */}
+            <Route path="/admin" element={<Admin setPosts={setPosts} />} /> {/* Pass setPosts to Admin */}
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
+  );
 }

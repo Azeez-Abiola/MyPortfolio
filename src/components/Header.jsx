@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaTwitter, FaLinkedin } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate from react-router-dom
+
+// Create a motion version of the Link component
+const MotionLink = motion(Link);
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['about', 'skills', 'experience', 'projects', 'contact'];
+      const sections = ['about', 'skills', 'experience', 'projects', 'contact', 'blog'];
       const currentSection = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -30,6 +35,7 @@ export default function Header() {
     { href: '#experience', label: 'Experience' },
     { href: '#projects', label: 'Projects' },
     { href: '#contact', label: 'Contact' },
+    { href: '/blog', label: 'Blog' }, // Updated to use path for Blog
   ];
 
   const menuVariants = {
@@ -56,20 +62,28 @@ export default function Header() {
   return (
     <header className="bg-gradient-to-r from-gray-950 to-blue-950 text-white">
       <div className="container mx-auto px-4 py-8 flex justify-between items-center">
-        <div className="text-3xl font-bold text-blue-400">&lt;AA/&gt;</div>
+        <div 
+          className="text-3xl font-bold text-blue-400 cursor-pointer" 
+          onClick={() => navigate('/')} // Redirect to homepage on logo click
+        >
+          &lt;AA/&gt;
+        </div>
         <nav className="hidden md:flex md:space-x-6">
           {menuItems.map((item) => (
-            <a
+            <MotionLink
               key={item.href}
-              href={item.href}
-              onClick={(e) => handleSmoothScroll(e, item.href)}
+              to={item.href} // Use Link to navigate
+              onClick={(e) => item.href.startsWith('#') && handleSmoothScroll(e, item.href)}
               className={`inline-block py-2 hover:text-blue-400 transition-colors duration-300 relative ${
                 activeSection === item.href.slice(1) ? 'text-blue-400' : ''
               }`}
+              variants={menuItemVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
             >
               {item.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
-            </a>
+            </MotionLink>
           ))}
         </nav>
         <div className="flex items-center space-x-6">
@@ -81,71 +95,12 @@ export default function Header() {
             <a href="https://x.com/darnyy_abiola?t=8Fi-SSB_4HcBafkXKTpXnA&s=09" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
               <FaTwitter className="w-6 h-6" />
             </a>
-            <a href="https://www.linkedin.com/in/abiola-azeez-688865201?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
+            <a href="https://www.linkedin.com/in/abiola-azeez-688865201?utm_source=share&utm_campaign=share_v" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
               <FaLinkedin className="w-6 h-6" />
             </a>
           </div>
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)} 
-            className="md:hidden text-white bg-[#111827] hover:bg-white hover:text-[#111827] rounded-md transition-colors duration-300 p-2 z-50"
-            style={{ border: '1px solid transparent' }}
-            onMouseEnter={(e) => e.currentTarget.style.border = '1px solid #111827'}
-            onMouseLeave={(e) => e.currentTarget.style.border = '1px solid transparent'}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
         </div>
       </div>
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            className="md:hidden fixed inset-0 z-40 bg-gray-900 bg-opacity-95"
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={menuVariants}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-          >
-            <div className="flex flex-col items-center justify-center h-full">
-              {menuItems.map((item, index) => (
-                <motion.a
-                  key={item.href}
-                  href={item.href}
-                  className="text-2xl font-semibold my-4 text-white hover:text-blue-400 transition-colors duration-300"
-                  onClick={(e) => {
-                    handleSmoothScroll(e, item.href);
-                    e.stopPropagation(); // Prevent event from bubbling up
-                  }}
-                  variants={menuItemVariants}
-                  initial="closed"
-                  animate="open"
-                  exit="closed"
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  {item.label}
-                </motion.a>
-              ))}
-              <div className="flex space-x-6 mt-6">
-                <a href="https://github.com/Azeez-Abiola" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
-                  <FaGithub className="w-8 h-8" />
-                </a>
-                <a href="https://x.com/darnyy_abiola?t=8Fi-SSB_4HcBafkXKTpXnA&s=09" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
-                  <FaTwitter className="w-8 h-8" />
-                </a>
-                <a href="https://www.linkedin.com/in/abiola-azeez-688865201?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
-                  <FaLinkedin className="w-8 h-8" />
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }
