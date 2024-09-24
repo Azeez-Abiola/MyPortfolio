@@ -57,7 +57,7 @@ export default function About() {
                   User experience, pixel perfect design, and writing clean accessible, human code matters to me.
                 </p>
                 <p className="mb-3 text-sm">
-                  My journey as a web developer began in 2017. Since then, I've grown and evolved, taking on new challenges and learning the latest technologies. In my 7+ years as a web developer, I've worked with various companies and startups, proud of the skills I've gained and the progress I've made.
+                  My journey as a web developer began in 2017. Since then, I've grown and evolved, taking on new challenges and learning the latest technologies. In my 5+ years as a web developer, I've worked with various companies and startups, proud of the skills I've gained and the progress I've made.
                 </p>
                 <p className="mb-3 text-sm">
                   When not in full-on developer mode, you can find me Working on my Startups or Reading Engineering Books, witnessing early startup journeys or enjoying free time. Follow me on Twitter for tech-related bites and build-in-public updates, or on GitHub.
