@@ -87,7 +87,7 @@ export default function Header() {
           ))}
         </nav>
         <div className="flex items-center space-x-6">
-          <a href="public/Azeez Abiola Quadri updated Cv.pdf" className="bg-[#111827] text-white px-5 py-2 rounded-md hover:bg-blue-500 transition-colors duration-300">Download CV</a>
+          <a href="/Azeez Abiola Quadri updated Cv.pdf" className="bg-[#111827] text-white px-5 py-2 rounded-md hover:bg-blue-500 transition-colors duration-300">Download CV</a>
           <div className="hidden md:flex space-x-4">
             <a href="https://github.com/Azeez-Abiola" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
               <FaGithub className="w-6 h-6" />
@@ -99,8 +99,68 @@ export default function Header() {
               <FaLinkedin className="w-6 h-6" />
             </a>
           </div>
+          {/* Hamburger Menu Button */}
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            className="md:hidden text-white bg-[#111827] hover:bg-white hover:text-[#111827] rounded-md transition-colors duration-300 p-2 z-50"
+            style={{ border: '1px solid transparent' }}
+            onMouseEnter={(e) => e.currentTarget.style.border = '1px solid #111827'}
+            onMouseLeave={(e) => e.currentTarget.style.border = '1px solid transparent'}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              {isMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            className="md:hidden fixed inset-0 z-40 bg-gray-900 bg-opacity-95"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={menuVariants}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
+            <div className="flex flex-col items-center justify-center h-full">
+              {menuItems.map((item, index) => (
+                <MotionLink // Use MotionLink here
+                  key={item.href}
+                  to={item.href} // Use Link to navigate
+                  className="text-2xl font-semibold my-4 text-white hover:text-blue-400 transition-colors duration-300"
+                  onClick={(e) => {
+                    item.href.startsWith('#') && handleSmoothScroll(e, item.href);
+                    e.stopPropagation(); // Prevent event from bubbling up
+                  }}
+                  variants={menuItemVariants}
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  {item.label}
+                </MotionLink>
+              ))}
+              <div className="flex space-x-6 mt-6">
+                <a href="https://github.com/Azeez-Abiola" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
+                  <FaGithub className="w-8 h-8" />
+                </a>
+                <a href="https://x.com/darnyy_abiola?t=8Fi-SSB_4HcBafkXKTpXnA&s=09" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
+                  <FaTwitter className="w-8 h-8" />
+                </a>
+                <a href="https://www.linkedin.com/in/abiola-azeez-688865201?utm_source=share&utm_campaign=share_v" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-colors duration-300">
+                  <FaLinkedin className="w-8 h-8" />
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
