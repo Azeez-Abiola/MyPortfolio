@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaTwitter, FaLinkedin } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate from react-router-dom
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-// Create a motion version of the Link component
 const MotionLink = motion(Link);
 
-export default function Header() {
+export default function Header({ isDarkMode, toggleDarkMode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,14 +29,24 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Define menu items
   const menuItems = [
     { href: '#about', label: 'About' },
     { href: '#skills', label: 'Skills' },
     { href: '#experience', label: 'Experience' },
     { href: '#projects', label: 'Projects' },
     { href: '#contact', label: 'Contact' },
-    { href: '/blog', label: 'Blog' }, // Updated to use path for Blog
+    { href: '/blog', label: 'Blog' },
   ];
+
+  // Conditionally add admin links
+  if (location.pathname === '/admin') {
+    menuItems.push(
+      { href: '/login', label: 'Login' },
+      { href: '/signup', label: 'SignUp' },
+      { href: '/admin', label: 'Admin Dashboard' }
+    );
+  }
 
   const menuVariants = {
     closed: { opacity: 0, x: "-100%" },
@@ -50,7 +60,7 @@ export default function Header() {
 
   const handleSmoothScroll = (e, href) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
     const targetId = href.substring(1);
     const targetElement = document.getElementById(targetId);
     if (targetElement) {
@@ -64,7 +74,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-8 flex justify-between items-center">
         <div 
           className="text-3xl font-bold text-blue-400 cursor-pointer" 
-          onClick={() => navigate('/')} // Redirect to homepage on logo click
+          onClick={() => navigate('/')}
         >
           &lt;AA/&gt;
         </div>
@@ -72,7 +82,7 @@ export default function Header() {
           {menuItems.map((item) => (
             <MotionLink
               key={item.href}
-              to={item.href} // Use Link to navigate
+              to={item.href}
               onClick={(e) => item.href.startsWith('#') && handleSmoothScroll(e, item.href)}
               className={`inline-block py-2 hover:text-blue-400 transition-colors duration-300 relative ${
                 activeSection === item.href.slice(1) ? 'text-blue-400' : ''
@@ -99,7 +109,6 @@ export default function Header() {
               <FaLinkedin className="w-6 h-6" />
             </a>
           </div>
-          {/* Hamburger Menu Button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)} 
             className="md:hidden text-white bg-[#111827] hover:bg-white hover:text-[#111827] rounded-md transition-colors duration-300 p-2 z-50"
@@ -129,13 +138,13 @@ export default function Header() {
           >
             <div className="flex flex-col items-center justify-center h-full">
               {menuItems.map((item, index) => (
-                <MotionLink // Use MotionLink here
+                <MotionLink
                   key={item.href}
-                  to={item.href} // Use Link to navigate
+                  to={item.href}
                   className="text-2xl font-semibold my-4 text-white hover:text-blue-400 transition-colors duration-300"
                   onClick={(e) => {
                     item.href.startsWith('#') && handleSmoothScroll(e, item.href);
-                    e.stopPropagation(); // Prevent event from bubbling up
+                    e.stopPropagation();
                   }}
                   variants={menuItemVariants}
                   initial="closed"
