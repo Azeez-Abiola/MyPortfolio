@@ -8,7 +8,7 @@ const postCollection = collection(db, "posts"); //am just rerencing this pos col
 
 export const fetchBlogPosts = async (showUnpublished = false) => {
     try{
-      const queryDatabase = await getDocs(postCollection).orderBy("date", "desc").get();
+      const queryDatabase = await getDocs(postCollection);
       const posts = queryDatabase.docs.map(doc => ({id: doc.id, ...doc.data()}));
       return showUnpublished ? posts : posts.filter(post => post.published);
     } catch(error){
