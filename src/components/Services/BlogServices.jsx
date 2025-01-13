@@ -1,118 +1,133 @@
-// Mock data
-let posts = [
-    {
-      id: '1',
-      title: 'Getting Started with React',
-      content: '<p>React is a popular JavaScript library for building user interfaces...</p>',
-      imageUrl: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-      excerpt: 'Learn the basics of React and start building your first application.',
-      category: 'tech',
-      published: true,
-      comments: [],
-    },
-    {
-      id: '2',
-      title: 'TypeScript: The Future of JavaScript',
-      content: '<p>TypeScript is a typed superset of JavaScript that compiles to plain JavaScript...</p>',
-      imageUrl: 'https://images.unsplash.com/photo-1616469829941-c7200edec809?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-      excerpt: 'Discover how TypeScript can improve your JavaScript development experience.',
-      category: 'tech',
-      published: false,
-      comments: [],
-    },
-  ];
-  
-  export const fetchBlogPosts = async (showUnpublished = false) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const filteredPosts = showUnpublished ? posts : posts.filter(post => post.published);
-        resolve(filteredPosts);
-      }, 500);
-    });
+import {doc, getDoc, addDoc, updateDoc, deleteDoc, arrayUnion, getDocs, collection} from "firebase/firestore";
+import {ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import { db } from "../../firebase";
+import axios from "axios";
+
+const postCollection = collection(db, "posts"); //am just rerencing this pos collectio for resuability later on
+
+
+export const fetchBlogPosts = async (showUnpublished = false) => {
+    try{
+      const queryDatabase = await getDocs(postCollection).orderBy("date", "desc").get();
+      const posts = queryDatabase.docs.map(doc => ({id: doc.id, ...doc.data()}));
+      return showUnpublished ? posts : posts.filter(post => post.published);
+    } catch(error){
+      console.error("Error Fetching entire posts in the database", error);
+      throw error;
+    }
   };
   
   export const fetchBlogPost = async (id) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const post = posts.find((p) => p.id === id);
-        if (post) {
-          resolve(post);
-        } else {
-          reject(new Error('Post not found'));
-        }
-      }, 500);
-    });
+    if(!id) return("id is required to fetch a post"); // so boss i just check if the id exists or the id passed in successfully before we do anything to avoid crashing
+    
+    // if it goes well then we can now do the logic
+    try{
+      const postDoc = await getDoc(doc(postCollection, id));
+      // now we go come have to check if the doc with the id exists in our posts collection by using the built in .exists() method from firebase 
+      if(postDoc.exists()){
+        return {sucess: true, message: "all posts fetched", id: postDoc.id, ...postDoc.data()};
+      } else{
+        return("Post Not Found it doesn't exist in the post collection!");
+      }
+    } catch(error){
+      console.error("error fetching post", error);
+      throw error;
+    }
   };
-  
+   
   export const createBlogPost = async (post) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newPost = { ...post, id: String(posts.length + 1), comments: [] };
-        posts.push(newPost);
-        resolve(newPost);
-      }, 500);
-    });
+   if(!post) return("No post or invalid post!");
+    try{
+      const newPostRef = await addDoc(postCollection, {...post, comments: []});
+      return {sucess: true, message: "post created successfully", id: newPostRef.id, ...post};
+    } catch(error){
+      console.error("Error creating post", error);
+      throw error;
+    }
   };
   
   export const updateBlogPost = async (id, post) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const index = posts.findIndex((p) => p.id === id);
-        if (index !== -1) {
-          posts[index] = { ...posts[index], ...post };
-          resolve(posts[index]);
-        } else {
-          reject(new Error('Post not found'));
-        }
-      }, 500);
-    });
+    if(!id || !post) return("Please an id and a new updated post content is required!");
+    try{
+      const postReference = doc(postCollection, id);
+      await updateDoc(postReference, post);
+      return {success: true, message: "post updated successfully", id, ...post};
+    } catch(error){
+      console.error("Error updating post", error);
+      throw error;
+    }
   };
   
   export const deleteBlogPost = async (id) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const index = posts.findIndex((p) => p.id === id);
-        if (index !== -1) {
-          posts.splice(index, 1);
-          resolve();
-        } else {
-          reject(new Error('Post not found'));
-        }
-      }, 500);
-    });
+    if(!id || !post) return("Please an id of the post to delete is required!");
+    try{
+      const postReference = doc(postCollection, id);
+      await deleteDoc(postReference);
+      return {success: true, message: "post deleted successful"};
+    } catch(error){
+      console.error("Error deleting post", error);
+    }
   };
+ 
+
+export const processImage = async (image) => {
+  if (!image) return "Invalid image file";
+
+  const cloudinaryUploadURL = import.meta.env.VITE_CLOUDINARY_KEY;
+
+  try {
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_PRESET);
+    const response = await axios.post(cloudinaryUploadURL, formData);
+    return response.data.secure_url;
+  } catch (error) {
+    console.error("Error uploading image to Cloudinary:", error);
+    throw new Error("Failed to upload image. Please try again.");
+  }
+};
+
   
   export const addComment = async (postId, comment) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const post = posts.find(p => p.id === postId);
-        if (post) {
-          const newComment = { ...comment, id: String(post.comments.length + 1), replies: [] };
-          post.comments.push(newComment);
-          resolve(newComment);
-        } else {
-          reject(new Error('Post not found'));
-        }
-      }, 500);
+  try {
+    const postReference = doc(postCollection, postId);
+    const newComment = { ...comment, id: String(Date.now()), replies: [] };
+    await updateDoc(postReference, {
+      comments: arrayUnion(newComment),
     });
-  };
-  
-  export const addReply = async (postId, commentId, reply) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const post = posts.find(p => p.id === postId);
-        if (post) {
-          const comment = post.comments.find(c => c.id === commentId);
-          if (comment) {
-            const newReply = { ...reply, id: String(comment.replies.length + 1), replies: [] };
-            comment.replies.push(newReply);
-            resolve(newReply);
-          } else {
-            reject(new Error('Comment not found'));
-          }
-        } else {
-          reject(new Error('Post not found'));
+    return newComment;
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    throw error;
+  }
+};
+
+export const addReply = async (postId, commentId, reply) => {
+  try {
+    const postReference = doc(postCollection, postId);
+    const postSnapshot = await getDoc(postReference);
+
+    if (postSnapshot.exists()) {
+      const postData = postSnapshot.data();
+      const comments = postData.comments || [];
+
+      const updatedComments = comments.map((comment) => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), { ...reply, id: String(Date.now()) }],
+          };
         }
-      }, 500);
-    });
-  };
+        return comment;
+      });
+
+      await updateDoc(postReference, { comments: updatedComments });
+      return reply;
+    } else {
+      throw new Error("Post not found");
+    }
+  } catch (error) {
+    console.error("Error adding reply:", error);
+    throw error;
+  }
+};
