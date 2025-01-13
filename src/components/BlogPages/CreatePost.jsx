@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createBlogPost } from '../Services/BlogServices';
-import { useAuth } from '../context/AuthContext';
+import { createBlogPost, processImage} from '../Services/BlogServices';
+import { useAuth } from '../Context/AuthContext';
 import { FaImage, FaTag, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+//import {serverTimestamp} from "firebase/firestore";
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -11,21 +12,17 @@ const CreatePost = () => {
   const [category, setCategory] = useState('tech');
   const [published, setPublished] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { admin } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user?.isAdmin) {
+    if (!admin) {
       alert('You must be an admin to create a post.');
       return;
     }
-
-    let imageUrl = '';
-    if (imageFile) {
-      imageUrl = URL.createObjectURL(imageFile);
-    }
-
-    const newPost = { title, content, imageUrl, category, published };
+    
+    const imageUrl = await processImage(imageFile);
+    const newPost = { title, content, imageUrl, category, published, date: new Date()};
     await createBlogPost(newPost);
     navigate('/admin');
   };

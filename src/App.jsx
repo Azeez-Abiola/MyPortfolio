@@ -8,7 +8,6 @@ import BlogPost from './components/BlogPages/BlogPost';
 import CreatePost from './components/BlogPages/CreatePost';
 import EditPost from './components/BlogPages/EditPost';
 import Login from './components/BlogPages/Login';
-import SignUp from './components/BlogPages/SignUp';
 import AdminDashboard from './components/BlogPages/AdminDashboard';
 import { AuthProvider } from './components/Context/AuthContext';
 import Preloader from './components/Preloader'; // Import Preloader
@@ -20,7 +19,6 @@ const AppContent = () => {
   // Define routes where header should be hidden
   const noHeaderRoutes = [
     '/login',
-    '/signup',
     '/admin',
     '/create',
     '/edit',
@@ -43,8 +41,7 @@ const AppContent = () => {
           <Route path="/create" element={<CreatePost />} />
           <Route path="/edit/:id" element={<EditPost />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+           <Route path="/admin" element={<AdminDashboard />} />
           {/* Existing routes */}
         </Routes>
       </main>

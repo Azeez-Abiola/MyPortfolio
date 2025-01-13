@@ -6,9 +6,9 @@ import { FaEdit, FaToggleOn, FaToggleOff, FaTrash, FaChartBar, FaPen, FaSignOutA
 
 const AdminDashboard = () => {
   const [posts, setPosts] = useState([]);
-  const { user } = useAuth();
+  const { admin, logout} = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  
   useEffect(() => {
     const loadPosts = async () => {
       const fetchedPosts = await fetchBlogPosts(true);
@@ -44,10 +44,17 @@ const AdminDashboard = () => {
   };
 
   const handleDeletePost = async (postId) => {
+    try{
     await deleteBlogPost(postId);
     setPosts(posts.filter(p => p.id !== postId));
+    }catch(error){
+      console.error("error deleting post", error)
+    }
   };
-
+  
+  const handleLogout = () => {
+    logout()
+  }
   const getCategoryCounts = () => {
     const categoryCounts = {};
     posts.forEach(post => {
@@ -59,12 +66,12 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    console.log('AdminDashboard - Current user:', user);
-    console.log('AdminDashboard - isAdmin value:', user?.isAdmin);
-    console.log('AdminDashboard - Full user object:', JSON.stringify(user, null, 2));
-  }, [user]);
+    console.log('AdminDashboard - Current user:', admin);
+    console.log('AdminDashboard - isAdmin value:', admin);
+    console.log('AdminDashboard - Full user object:', JSON.stringify(admin, null, 2));
+  }, [admin]);
 
-  if (!user?.isAdmin) {
+  if (!admin) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900">
         <div className="text-center text-red-500 bg-gray-800 p-8 rounded-lg shadow-lg">
@@ -108,7 +115,7 @@ const AdminDashboard = () => {
               </Link>
             </li>
             <li>
-              <Link to="/logout" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition duration-300">
+              <Link onClick={handleLogout} to="/login" className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 transition duration-300">
                 <FaSignOutAlt />
                 <span>Logout</span>
               </Link>
@@ -125,12 +132,13 @@ const AdminDashboard = () => {
           {/* Category Summary */}
           <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-lg">
             <h2 className="text-xl md:text-2xl font-bold mb-4">Articles Published Per Category</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-coils-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {Object.entries(categoryCounts).map(([category, count]) => (
                 <div key={category} className="bg-gray-700 p-4 rounded-md">
                   <h3 className="font-semibold text-lg mb-2">{category}</h3>
                   <p className="text-3xl font-bold text-blue-400">{count}</p>
-                  <p className="text-sm text-gray-400">articles</p>
+                  <p className="t
+                  ext-sm text-gray-400">articles</p>
                 </div>
               ))}
             </div>

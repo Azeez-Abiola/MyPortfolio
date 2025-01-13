@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchBlogPost, addComment } from '../Services/BlogServices';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../Context/AuthContext';
 import { FaUser, FaCalendar, FaTag, FaHeart, FaComment, FaShare } from 'react-icons/fa';
 
 const BlogPostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [newComment, setNewComment] = useState('');
-  const { user } = useAuth();
+  const { admin } = useAuth();
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
@@ -70,10 +70,11 @@ const BlogPostPage = () => {
                 <FaTag className="mr-2" />
                 {post.category || 'Uncategorized'}
               </span>
-              <div className="flex items-center text-gray-400 text-sm">
-                <FaCalendar className="mr-2" />
-                {post.date ? new Date(post.date).toLocaleDateString() : 'No date'}
-              </div>
+                <div className="flex items-center text-gray-400 text-sm">
+                  <FaCalendar className="mr-2" />
+                 {post.date && post.date.toDate ? post.date: 'No date'}
+            </div>
+
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
             

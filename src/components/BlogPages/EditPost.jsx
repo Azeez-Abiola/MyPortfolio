@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchBlogPost, updateBlogPost } from '../Services/BlogServices';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../Context/AuthContext';
 import { FaSave, FaImage, FaTag, FaToggleOn, FaToggleOff } from 'react-icons/fa';
 
 // Simple toast function
@@ -19,7 +19,7 @@ const EditPost = () => {
   const [published, setPublished] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { admin } = useAuth();
 
   useEffect(() => {
     const loadPost = async () => {
@@ -43,7 +43,7 @@ const EditPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user?.isAdmin) {
+    if (!admin) {
       toast("You must be an admin to edit a post.", "error");
       return;
     }
