@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MainHome from './components/MainHome'; // New home component
@@ -13,7 +13,47 @@ import AdminDashboard from './components/BlogPages/AdminDashboard';
 import { AuthProvider } from './components/Context/AuthContext';
 import Preloader from './components/Preloader'; // Import Preloader
 
-export default function App() {
+// Create a wrapper component to handle header visibility
+const AppContent = () => {
+  const location = useLocation();
+  
+  // Define routes where header should be hidden
+  const noHeaderRoutes = [
+    '/login',
+    '/signup',
+    '/admin',
+    '/create',
+    '/edit',
+    '/blog'
+  ];
+
+  // Check if current path should have header
+  const shouldShowHeader = !noHeaderRoutes.some(route => 
+    location.pathname.startsWith(route)
+  );
+
+  return (
+    <div>
+      {shouldShowHeader && <Header />}
+      <main>
+        <Routes>
+          <Route path="/" element={<MainHome />} /> {/* Main home page */}
+          <Route path="/blog" element={<BlogHome />} /> {/* Blog home page */}
+          <Route path="/post/:id" element={<BlogPost />} />
+          <Route path="/create" element={<CreatePost />} />
+          <Route path="/edit/:id" element={<EditPost />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          {/* Existing routes */}
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,23 +75,11 @@ export default function App() {
     <AuthProvider>
       <Router>
         <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#111827] text-white' : 'bg-[#111827] text-gray-900'}`}>
-          <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-          <main className="container mx-auto px-4 py-8">
-            <Routes>
-              <Route path="/" element={<MainHome />} /> {/* Main home page */}
-              <Route path="/blog" element={<BlogHome />} /> {/* Blog home page */}
-              <Route path="/post/:id" element={<BlogPost />} />
-              <Route path="/create" element={<CreatePost />} />
-              <Route path="/edit/:id" element={<EditPost />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              {/* Existing routes */}
-            </Routes>
-          </main>
-          <Footer />
+          <AppContent />
         </div>
       </Router>
     </AuthProvider>
   );
-}
+};
+
+export default App;

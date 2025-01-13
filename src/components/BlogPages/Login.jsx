@@ -1,25 +1,25 @@
 // src/components/BlogPages/Login.jsx
 import React, { useState } from 'react';
-import { logIn } from '../../authService';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../Context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // Check if the email and password match the admin credentials
-    if (email !== 'Abiola223@Admin.com' || password !== 'Admin344@') {
-      setError('Only the admin can log in.');
-      return;
-    }
     try {
-      await logIn(email, password);
-      console.log('User logged in successfully');
-      navigate('/admin'); // Redirect to the admin dashboard
+      const result = await login(email, password);
+      if (result.success) {
+        console.log('User logged in successfully');
+        navigate('/admin');
+      } else {
+        setError(result.error || 'Only the admin can log in.');
+      }
     } catch (error) {
       setError('Failed to log in. Please try again.');
       console.error('Login error:', error);

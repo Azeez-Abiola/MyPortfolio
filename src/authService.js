@@ -24,13 +24,19 @@ export const signUp = async (email, password) => {
  * Log in an existing user with email and password.
  * @param {string} email - The user's email address.
  * @param {string} password - The user's password.
- * @returns {Promise<UserCredential>} - The user credential object.
+ * @returns {Promise<UserCredential>} - The user credential object with isAdmin flag.
  */
 export const logIn = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    console.log('User logged in:', userCredential.user);
-    return userCredential.user;
+    // Check if the user has admin credentials
+    const isAdmin = email === 'Abiola223@Admin.com' && password === 'Admin344@';
+    const user = {
+      ...userCredential.user,
+      isAdmin
+    };
+    console.log('User logged in:', user);
+    return user;
   } catch (error) {
     console.error('Error logging in:', error);
     throw new Error(mapFirebaseError(error));
