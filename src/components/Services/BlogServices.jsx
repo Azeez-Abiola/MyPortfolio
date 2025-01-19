@@ -1,10 +1,9 @@
 import {doc, getDoc, addDoc, updateDoc, deleteDoc, arrayUnion, getDocs, collection} from "firebase/firestore";
-import {ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { db } from "../../firebase";
 import axios from "axios";
+import CryptoJS from "crypto-js";
 
-const postCollection = collection(db, "posts"); //am just rerencing this pos collectio for resuability later on
-
+const postCollection = collection(db, "posts");
 
 export const fetchBlogPosts = async (showUnpublished = false) => {
     try{
@@ -46,31 +45,7 @@ export const fetchBlogPosts = async (showUnpublished = false) => {
     }
   };
   
-  export const updateBlogPost = async (id, post) => {
-    if(!id || !post) return("Please an id and a new updated post content is required!");
-    try{
-      const postReference = doc(postCollection, id);
-      await updateDoc(postReference, post);
-      return {success: true, message: "post updated successfully", id, ...post};
-    } catch(error){
-      console.error("Error updating post", error);
-      throw error;
-    }
-  };
-  
-  export const deleteBlogPost = async (id) => {
-    if(!id || !post) return("Please an id of the post to delete is required!");
-    try{
-      const postReference = doc(postCollection, id);
-      await deleteDoc(postReference);
-      return {success: true, message: "post deleted successful"};
-    } catch(error){
-      console.error("Error deleting post", error);
-    }
-  };
- 
-
-export const processImage = async (image) => {
+  export const processImage = async (image) => {
   if (!image) return "Invalid image file";
 
   const cloudinaryUploadURL = import.meta.env.VITE_CLOUDINARY_KEY;
@@ -87,11 +62,65 @@ export const processImage = async (image) => {
   }
 };
 
+  export const updateBlogPost = async (id, post) => {
+    if(!id || !post) return("Please an id and a new updated post content is required!");
+    try{
+      const postReference = doc(postCollection, id);
+      await updateDoc(postReference, post);
+      return {success: true, message: "post updated successfully", id, ...post};
+    } catch(error){
+      console.error("Error updating post", error);
+      throw error;
+    }
+  };
   
+  export const deleteBlogPost = async (postId) => {
+    if(!postId || !image) return("Please an postId of the post to delete is required!");
+    try{
+      const postReference = doc(postCollection, postId);
+      await deleteDoc(postReference);
+      // TODOif(image !== "") await deleteImageFromCloudinary(image)
+      return {success: true, message: "post deleted successful"};
+    } catch(error){
+      console.error("Error deleting post", error);
+    }
+  };
+
+/*TODO
+const deleteImageFromCloudinary = async (publicId) => {
+  const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+  const apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
+
+  const timestamp = Math.floor(Date.now() / 1000);
+
+  const signature = CryptoJS.SHA1(`public_id=${publicId}&timestamp=${timestamp}${apiSecret}`).toString();
+
+  const url = import.meta.env.VITE_CLOUDINARY_DELETE_KEY;
+  const formData = new FormData();
+  formData.append("public_id", publicId);
+  formData.append("api_key", apiKey);
+  formData.append("timestamp", timestamp);
+  formData.append("signature", signature);
+
+  try {
+    const response = await axios.post(url, formData);
+    if (response.data.result === "ok") {
+      console.log("Image deleted successfully:", response.data);
+    } else {
+      console.error("Failed to delete image:", response.data);
+    }
+  } catch (error) {
+    console.error("Error deleting image from Cloudinary:", error);
+    throw error;
+  }
+};
+*/
+
+
   export const addComment = async (postId, comment) => {
   try {
     const postReference = doc(postCollection, postId);
-    const newComment = { ...comment, id: String(Date.now()), replies: [] };
+    const newComment = { ...comment, date: new Date().toISOString(), id: String(Date.now()), replies: [] };
     await updateDoc(postReference, {
       comments: arrayUnion(newComment),
     });
@@ -128,6 +157,43 @@ export const addReply = async (postId, commentId, reply) => {
     }
   } catch (error) {
     console.error("Error adding reply:", error);
+    throw error;
+  }
+};
+
+
+export const handleLikePost = async (postId, userId) => {
+  if (!postId || !userId) return "Missing userId or invalid postId";
+
+  try {
+    const postReference = doc(postCollection, postId);
+    const postSnapshot = await getDoc(postReference);
+
+    if (postSnapshot.exists()) {
+      const postData = postSnapshot.data();
+      const likes = postData.likes || [];
+
+      let updatedLikes;
+
+      if (likes.includes(userId)) {
+     updatedLikes = likes.filter((id) => id !== userId);
+      } else {
+        updatedLikes = [...likes, userId];
+      }
+      await updateDoc(postReference, { likes: updatedLikes });
+
+      return {
+        success: true,
+        message: likes.includes(userId)
+          ? "Post unliked successfully"
+          : "Post liked successfully",
+        likes: updatedLikes,
+      };
+    } else {
+      throw new Error("Post not found");
+    }
+  } catch (error) {
+    console.error("Error handling likes:", error);
     throw error;
   }
 };

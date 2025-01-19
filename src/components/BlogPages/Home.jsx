@@ -117,7 +117,7 @@ const Home = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-400 flex items-center">
                     <FaClock className="mr-1" />
-                    {post.date}
+                    {new Date(post.lastModified).toLocaleString()}
                   </span>
                   <Link 
                     to={`/post/${post.id}`} 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchBlogPost, addComment } from '../Services/BlogServices';
+import { fetchBlogPost, addComment, handleLikePost } from '../Services/BlogServices';
 import { useAuth } from '../Context/AuthContext';
 import { FaUser, FaCalendar, FaTag, FaHeart, FaComment, FaShare } from 'react-icons/fa';
 
@@ -27,7 +27,7 @@ const BlogPostPage = () => {
 
   const handleAddComment = async () => {
     if (id && newComment) {
-      const comment = { content: newComment, author: user?.username || 'Anonymous' };
+      const comment = { content: newComment, author: 'Anonymous' };
       await addComment(id, comment);
       setNewComment('');
       const updatedPost = await fetchBlogPost(id);
@@ -36,19 +36,38 @@ const BlogPostPage = () => {
     }
   };
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    showToast(
-      isLiked ? "Post Unliked" : "Post Liked",
-      isLiked ? "You've removed your like from this post." : "You've liked this post!"
+  const handleLike = async () => {
+  if (!post || !id) return;
+  const likedPosts = JSON.parse(localStorage.getItem("likedPosts")) || [];
+  const isPostLiked = likedPosts.includes(id);
+
+  if (isPostLiked) {
+    const updatedLikes = post.likes - 1;
+    await handleLikePost(id, updatedLikes);
+    setPost({ ...post, likes: updatedLikes });
+    localStorage.setItem(
+      "likedPosts",
+      JSON.stringify(likedPosts.filter((postId) => postId !== id))
     );
-  };
+    setIsLiked(false); 
+    showToast("Post Unliked", "You've removed your like from this post.");
+  } else {
+    const updatedLikes = post.likes + 1;
+    await handleLikePost(id, updatedLikes);
+    setPost({ ...post, likes: updatedLikes });
+    likedPosts.push(id);
+    localStorage.setItem("likedPosts", JSON.stringify(likedPosts));
+    setIsLiked(true); 
+    showToast("Post Liked", "You've liked this post!");
+  }
+};
+
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     showToast("Link Copied", "The link to this post has been copied to your clipboard.");
   };
-
+  
   if (!post) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
@@ -56,6 +75,7 @@ const BlogPostPage = () => {
       </div>
     );
   }
+  
 
   return (
     <div className="bg-gray-900 min-h-screen text-white">
@@ -72,7 +92,7 @@ const BlogPostPage = () => {
               </span>
                 <div className="flex items-center text-gray-400 text-sm">
                   <FaCalendar className="mr-2" />
-                 {post.date && post.date.toDate ? post.date: 'No date'}
+                 <span>{new Date(post.lastModified).toLocaleString()}</span>
             </div>
 
             </div>
@@ -165,8 +185,9 @@ const BlogPostPage = () => {
             </button>
           </div>
         </div>
-
-        <div className="max-w-4xl mx-auto mt-8">
+        
+        
+{/*   TODO     <div className="max-w-4xl mx-auto mt-8">
           <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
@@ -179,9 +200,9 @@ const BlogPostPage = () => {
               </Link>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
-    </div>
+    </div> 
   );
 };
 

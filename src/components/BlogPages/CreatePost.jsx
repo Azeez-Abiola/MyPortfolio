@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createBlogPost, processImage} from '../Services/BlogServices';
 import { useAuth } from '../Context/AuthContext';
 import { FaImage, FaTag, FaToggleOn, FaToggleOff } from 'react-icons/fa';
-//import {serverTimestamp} from "firebase/firestore";
+
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -22,7 +22,7 @@ const CreatePost = () => {
     }
     
     const imageUrl = await processImage(imageFile);
-    const newPost = { title, content, imageUrl, category, published, date: new Date()};
+    const newPost = { title, content, imageUrl, category, published, lastModified: new Date().toISOString()};
     await createBlogPost(newPost);
     navigate('/admin');
   };

@@ -13,6 +13,7 @@ const AdminDashboard = () => {
     const loadPosts = async () => {
       const fetchedPosts = await fetchBlogPosts(true);
       setPosts(fetchedPosts);
+      console.log(posts)
     };
     loadPosts();
   }, []);
@@ -144,7 +145,13 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Posts Table */}
+          {/* Posts Table and check if post is empty or not*/}
+          {posts.length <= 0 ? (
+            <div className="text-center text-2xl font-bold">
+            <img src="/Empty-rafiki.png" className="w-64 block mx-auto" alt="no post available"/>
+             <p>Oops no post yet</p>
+            </div>
+          ):(
           <div className="bg-gray-800 rounded-lg shadow-lg overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-700">
@@ -197,10 +204,11 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
+          )}
         </div>
       </main>
     </div>
-  );
+  )
 };
 
 export default AdminDashboard;
