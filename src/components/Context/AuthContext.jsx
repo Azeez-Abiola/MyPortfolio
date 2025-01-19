@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("isAdmin");
     setAdmin(false);
+    window.location.href = "/login";
   };
 
   return (
